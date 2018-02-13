@@ -12,7 +12,7 @@ import re
 import base64 
 from dnsdumpster.DNSDumpsterAPI import DNSDumpsterAPI
 
-class BurpExender(IBurpExtender, IContextMenuFactory):
+class BurpExtender(IBurpExtender, IContextMenuFactory):
     def registerExtenderCallbacks(self, callbacks):
         self._callbacks = callbacks
         self._helpers   = callbacks.getHelpers() 
