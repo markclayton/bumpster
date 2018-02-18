@@ -29,3 +29,13 @@ DNSDumpsterAPI traditionally uses `requests` and `bs4 (BeautifulSoup)` but appar
 ```
 dnsdumpster 
 ```
+
+## Shoutout to Black Hat Python
+
+It should be noted that about 50-60% of this code comes from the Black Hat Python book, since it's my first extension I stuck really closely to the book. Anyway shoutout to [@jms_dot_py](https://twitter.com/jms_dot_py) and his amazing book!
+
+## Contribution
+
+Of course, I'm open to any additions/revisions/corrections you guys see fit so submit pull requests and issues whenever!
+
+Happy hacking! 
