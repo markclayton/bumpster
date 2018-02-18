@@ -63,49 +63,48 @@ class DNSDumpsterAPI(object):
     def search(self, domain):
         dnsdumpster_url = 'https://dnsdumpster.com/'
 
-    	req = urllib2.urlopen(dnsdumpster_url)
+	req = urllib2.urlopen(dnsdumpster_url)
         soup = BeautifulSoup(req.read(), 'html.parser')
         csrf_middleware = soup.findAll('input', attrs={'name': 'csrfmiddlewaretoken'})[0]['value']
         self.display_message('Retrieved token: %s' % csrf_middleware)
 
-    	csrftoken = "csrftoken=%s" % str(csrf_middleware)
-        headers = {'Referer': dnsdumpster_url, 'Cookie': csrftoken}
+	csrftoken = "csrftoken=%s" % str(csrf_middleware)
 
-    	req = urllib2.Request(dnsdumpster_url)
-    	req.add_header('Referer', dnsdumpster_url)
-    	req.add_header('Cookie', csrftoken)
-    	data = "csrfmiddlewaretoken=%s&targetip=%s" % (csrf_middleware, domain)
-    	response = urllib2.urlopen(req, data=data)
-    	
-    	rd = response.read()
+	req = urllib2.Request(dnsdumpster_url)
+	req.add_header('Referer', dnsdumpster_url)
+	req.add_header('Cookie', csrftoken)
+	data = "csrfmiddlewaretoken=%s&targetip=%s" % (csrf_middleware, domain)
+	response = urllib2.urlopen(req, data=data)
+	
+	rd = response.read()
 
-            if response.getcode() != 200:
-                print(
-                    "Unexpected status code from {url}: {code}".format(
-                        url=dnsdumpster_url, code=status),
-                    file=sys.stderr,
-                )
-                return []
+        if response.getcode() != 200:
+            print(
+                "Unexpected status code from {url}: {code}".format(
+                    url=dnsdumpster_url, code=status),
+                file=sys.stderr,
+            )
+            return []
 
-            if 'error' in response.read().decode('utf-8'):
-                print("There was an error getting results", file=sys.stderr)
-                return []
+        if 'error' in response.read().decode('utf-8'):
+            print("There was an error getting results", file=sys.stderr)
+            return []
 
-            soup = BeautifulSoup(rd, 'html.parser')
-            tables = soup.findAll('table')
+        soup = BeautifulSoup(rd, 'html.parser')
+        tables = soup.findAll('table')
 
-            res = {}
-            res['domain'] = domain
-            res['dns_records'] = {}
-            res['dns_records']['dns'] = self.retrieve_results(tables[0])
-            res['dns_records']['mx'] = self.retrieve_results(tables[1])
-            res['dns_records']['txt'] = self.retrieve_txt_record(tables[2])
-            res['dns_records']['host'] = self.retrieve_results(tables[3])
+        res = {}
+        res['domain'] = domain
+        res['dns_records'] = {}
+        res['dns_records']['dns'] = self.retrieve_results(tables[0])
+        res['dns_records']['mx'] = self.retrieve_results(tables[1])
+        res['dns_records']['txt'] = self.retrieve_txt_record(tables[2])
+        res['dns_records']['host'] = self.retrieve_results(tables[3])
 
-    	domains = {}
-    	domains['host'] = self.retrieve_results(tables[3])
+	domains = {}
+	domains['host'] = self.retrieve_results(tables[3])
 
-    	'''
+	'''
         # XLS hosts.
         # eg. tsebo.com-201606131255.xlsx
         try:
@@ -117,8 +116,8 @@ class DNSDumpsterAPI(object):
             xls_data = None
         finally:
             res['xls_data'] = xls_data
-    	'''
+	'''
 
         #return res
-    	return domains
+	return domains
 
