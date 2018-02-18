@@ -1,3 +1,8 @@
+'''
+Bumpster: The (Unofficial) Burp Extension for DNSDumpster.com
+Author: Mark Clayton (@bullz3ye)
+'''
+
 from burp import IBurpExtender
 from burp import IContextMenuFactory
 
@@ -5,8 +10,6 @@ from javax.swing import JMenuItem
 from java.util import List, ArrayList 
 from java.net import URL 
 
-import socket # probably not needed
-import urllib # probably not needed
 import json 
 import re 
 import base64 
@@ -18,7 +21,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory):
         self._helpers   = callbacks.getHelpers() 
         self.context    = None
 
-        callbacks.setExtensionName("Dnsdumpster")
+        callbacks.setExtensionName("Bumpster")
         callbacks.registerContextMenuFactory(self)
 
         return 
@@ -26,7 +29,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory):
     def createMenuItems(self, context_menu):
         self.context = context_menu 
         menu_list = ArrayList()
-        menu_list.add(JMenuItem("Send to Dnsdumpster", actionPerformed=self.dnsdumpster_menu))
+        menu_list.add(JMenuItem("Add subdomains to scope via Bumpster", actionPerformed=self.dnsdumpster_menu))
         return menu_list
 
     def dnsdumpster_menu(self, event):
@@ -61,4 +64,11 @@ class BurpExtender(IBurpExtender, IContextMenuFactory):
 
     def dnsdumpster_query(self, host):
         res = DNSDumpsterAPI().search(host)
-        print res
+	for i in res['host']:
+		sub = URL("http://" + i['domain'] + "/")
+		if not self._callbacks.isInScope(sub):
+			print "Adding %s to Burp Scope" % sub 
+			self._callbacks.includeInScope(sub)
+
+
+	return 
