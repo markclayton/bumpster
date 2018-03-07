@@ -64,11 +64,12 @@ class BurpExtender(IBurpExtender, IContextMenuFactory):
 
     def dnsdumpster_query(self, host):
         res = DNSDumpsterAPI().search(host)
-	for i in res['host']:
-		sub = URL("http://" + i['domain'] + "/")
-		if not self._callbacks.isInScope(sub):
-			print "Adding %s to Burp Scope" % sub 
-			self._callbacks.includeInScope(sub)
-
-
-	return 
+    	for i in res['host']:
+    		sub1 = URL("http://" + i['domain'] + "/")
+            sub2 = URL("https://" + i['domain'] + "/")
+            if not self._callbacks.isInScope(sub1):
+                print "Adding %s to Burp Scope" % sub1
+                self._callbacks.includeInScope(sub1)
+            if not self._callbacks.isInScope(sub2):
+                self._callbacks.includeInScope(sub2)
+    	return 
