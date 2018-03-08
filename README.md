@@ -39,3 +39,5 @@ It should be noted that about 50-60% of this code comes from the Black Hat Pytho
 Of course, I'm open to any additions/revisions/corrections you guys see fit so submit pull requests and issues whenever!
 
 Happy hacking! 
+
+This project is licensed under the terms of the MIT license.
